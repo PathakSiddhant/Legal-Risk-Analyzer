@@ -1,0 +1,14 @@
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Virtual Environment (Ye upload nahi hona chahiye)
+venv/
+env/
+
+# Environment Variables (Secret keys yaha hoti hain)
+.env
+
+# MacOS junk
+.DS_Store
+
