@@ -47,10 +47,22 @@ def analyze_clause_with_llm(clause_text):
     
     prompt = PromptTemplate(template=template, input_variables=["text"])
     
-    # Chain banana (Prompt + Model ek saath)
+    # Chain banana
     chain = prompt | llm
     
     # AI ko run karna
     response = chain.invoke({"text": clause_text})
     
-    return response.content
+    # --- FIX START: Handling different output formats ---
+    # Kabhi kabhi model List bhejta hai, kabhi String. Hum dono handle karenge.
+    if isinstance(response.content, list):
+        # Agar List hai, toh usme se saara text jod lo
+        final_text = ""
+        for item in response.content:
+            if isinstance(item, dict) and 'text' in item:
+                final_text += item['text']
+        return final_text
+    else:
+        # Agar seedha text hai, toh wahi return karo
+        return response.content
+    # --- FIX END ---
