@@ -27,42 +27,38 @@ def get_pdf_text(pdf_docs):
 
 # --- Function 2: AI se Risk Analysis karwana (The Brain) ---
 def analyze_clause_with_llm(clause_text):
-    # Ye hai humara "Prompt Design" - AI ko instruction dena
     template = """
-    You are an expert Legal Risk Analyzer for Indian Contracts. 
-    Analyze the following contract text strictly.
+    You are an expert Legal Risk Analyzer. 
+    Analyze the contract text and identify risky clauses.
     
-    Identify key clauses that might be risky for the user (like Data Privacy, Termination, Indemnity).
+    OUTPUT FORMAT INSTRUCTIONS (STRICTLY FOLLOW THIS):
+    1. Separate each clause with "###"
+    2. Within each clause, separate Title, Risk, and Explanation with "|"
+    3. Format: Clause Name | Risk Level (High/Medium/Low) | Explanation (Bullet points)
+    4. Do not add any intro/outro text.
     
-    For each identified risk, provide:
-    1. Clause Name
-    2. Risk Level (High/Medium/Low)
-    3. Simple Explanation (Why is it risky?)
-    
+    Example Output:
+    Unilateral Termination | High | The company can fire you without notice.
+    ###
+    Data Selling | High | Your data is sold to 3rd parties.
+    ###
+    Jurisdiction | Low | Standard court clauses.
+
     Input Text:
     {text}
-    
-    Output Format (Keep it concise and bulleted):
     """
     
     prompt = PromptTemplate(template=template, input_variables=["text"])
-    
-    # Chain banana
     chain = prompt | llm
-    
-    # AI ko run karna
     response = chain.invoke({"text": clause_text})
     
-    # --- FIX START: Handling different output formats ---
-    # Kabhi kabhi model List bhejta hai, kabhi String. Hum dono handle karenge.
+    # Handle List vs String output (Gemini Quirk Fix)
     if isinstance(response.content, list):
-        # Agar List hai, toh usme se saara text jod lo
         final_text = ""
         for item in response.content:
             if isinstance(item, dict) and 'text' in item:
                 final_text += item['text']
         return final_text
     else:
-        # Agar seedha text hai, toh wahi return karo
         return response.content
-    # --- FIX END ---
+    
