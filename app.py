@@ -5,7 +5,7 @@ from utils import get_pdf_text, analyze_clause_with_llm
 # --- Page Config ---
 st.set_page_config(page_title="LexiSafe AI", page_icon="⚖️", layout="wide", initial_sidebar_state="expanded")
 
-# --- CSS STYLING (BUG FIXES APPLIED) ---
+# --- CSS STYLING (Footer Fixed & Polished) ---
 st.markdown("""
     <style>
     /* 1. FONTS & BACKGROUND */
@@ -45,7 +45,7 @@ st.markdown("""
         transition: transform 0.2s;
     }
     .metric-box:hover {
-        transform: translateY(-5px); /* Sirf upar jayega, right nahi */
+        transform: translateY(-5px);
         border-color: #58A6FF;
     }
     .metric-number { font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; }
@@ -60,17 +60,16 @@ st.markdown("""
     .metric-green { border-top: 4px solid #00C9FF; }
     .num-green { color: #00C9FF; }
 
-    /* 4. RISK CARDS (Fixed Movement Issue) */
+    /* 4. RISK CARDS */
     .risk-card {
         background-color: #161B22;
         padding: 20px;
         border-radius: 10px;
         margin-bottom: 15px;
         border: 1px solid #30363D;
-        transition: transform 0.2s ease; /* Smooth lift */
+        transition: transform 0.2s ease;
     }
     
-    /* Hover Effects - Only Vertical Lift, No Right Shift */
     .high-border { border-left: 4px solid #FF4B4B; }
     .high-border:hover { border-color: #FF4B4B; transform: translateY(-3px); }
 
@@ -86,7 +85,7 @@ st.markdown("""
         background: rgba(56, 139, 253, 0.1); 
         padding: 10px; 
         border-radius: 6px; 
-        font-size: 0.9rem; 
+        font-size: 0.95rem; 
         color: #58A6FF; 
         border-left: 3px solid #58A6FF;
     }
@@ -114,16 +113,21 @@ st.markdown("""
     }
     @keyframes blinker { 50% { opacity: 0; } }
 
-    /* 7. FOOTER (Fixed Alignment) */
-    .footer-box {
-        margin-top: 50px;
-        padding: 20px;
-        border-top: 1px solid #30363D;
-        text-align: center;
+    /* 7. FOOTER (PERFECTLY FIXED & BIGGER) */
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #0E1117; /* Matches Main BG */
         color: #8B949E;
-        font-size: 13px;
+        text-align: center;
+        padding: 20px; /* Bigger Padding */
+        font-size: 15px; /* Bigger Font */
+        border-top: 1px solid #30363D;
+        z-index: 1000;
     }
-    .footer-box a { color: #58A6FF; text-decoration: none; font-weight: bold; }
+    .footer a { color: #58A6FF; text-decoration: none; font-weight: bold; }
 
     /* 8. BUTTONS */
     .stButton>button {
@@ -131,10 +135,15 @@ st.markdown("""
     }
     .stButton>button:hover { background-color: #2EA043; border-color: #fff; }
 
-    /* FIX: Show Header (Taaki Sidebar wapis aa sake) but hide default footer */
+    /* Layout Adjustments */
     #MainMenu {visibility: visible;} 
-    footer {visibility: hidden;} 
-    header {visibility: visible;} /* Important for Sidebar Toggle */
+    footer {visibility: hidden;} /* Hide Streamlit's default footer */
+    header {visibility: visible;} 
+    
+    /* Add padding to bottom of main content so it doesn't hide behind footer */
+    .block-container {
+        padding-bottom: 80px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -315,9 +324,9 @@ else:
             st.session_state.last_file = None
             st.rerun()
 
-# --- STATIC FOOTER (NO CENTERING ISSUES) ---
+# --- FOOTER (FIXED & BIGGER) ---
 st.markdown("""
-<div class="footer-box">
-    Designed by <a href="https://github.com/PathakSiddhant" target="_blank">Siddhant</a> | LexiSafe AI © 2024
+<div class="footer">
+    Designed by <a href="https://github.com/PathakSiddhant" target="_blank">Siddhant</a> | LexiSafe AI ⚖️ | © 2024 All Rights Reserved.
 </div>
 """, unsafe_allow_html=True)
