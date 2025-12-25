@@ -15,6 +15,31 @@ class PDFReport(FPDF):
         self.set_text_color(128)
         self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
 
+def clean_text(text):
+    """
+    Fixes encoding issues by replacing 'smart quotes' and unsupported characters
+    with standard ASCII equivalents.
+    """
+    if not isinstance(text, str):
+        return str(text)
+        
+    replacements = {
+        '\u2018': "'",  # Left single quote
+        '\u2019': "'",  # Right single quote
+        '\u201c': '"',  # Left double quote
+        '\u201d': '"',  # Right double quote
+        '\u2013': '-',  # En dash
+        '\u2014': '-',  # Em dash
+        '\u2026': '...', # Ellipsis
+        '\u00A0': ' ',   # Non-breaking space
+    }
+    
+    for char, replacement in replacements.items():
+        text = text.replace(char, replacement)
+    
+    # Force convert to latin-1 compatible text, replacing unknowns with '?'
+    return text.encode('latin-1', 'replace').decode('latin-1')
+
 def create_pdf_report(filename, risks):
     """
     Generates a professional PDF report from the risks dictionary.
@@ -26,7 +51,8 @@ def create_pdf_report(filename, risks):
     # --- TITLE SECTION ---
     pdf.set_font("Arial", 'B', 12)
     pdf.set_text_color(0)
-    pdf.cell(0, 10, f"Contract Analyzed: {filename}", 0, 1)
+    # Applying clean_text to prevent crashes
+    pdf.cell(0, 10, f"Contract Analyzed: {clean_text(filename)}", 0, 1)
     pdf.ln(5)
     
     # --- SUMMARY METRICS ---
@@ -43,7 +69,7 @@ def create_pdf_report(filename, risks):
         # Section Header
         pdf.set_font("Arial", 'B', 12)
         pdf.set_text_color(color_r, color_g, color_b)
-        pdf.cell(0, 10, title.upper(), 0, 1)
+        pdf.cell(0, 10, clean_text(title.upper()), 0, 1)
         pdf.set_text_color(0) # Reset to black
         
         # Items
@@ -51,16 +77,19 @@ def create_pdf_report(filename, risks):
         for item in items:
             # Clause Title
             pdf.set_font("Arial", 'B', 10)
-            pdf.cell(0, 8, f"- {item['title']}", 0, 1)
+            # CLEANING TEXT HERE
+            pdf.cell(0, 8, f"- {clean_text(item['title'])}", 0, 1)
             
             # Explanation
             pdf.set_font("Arial", '', 10)
-            pdf.multi_cell(0, 5, f"Analysis: {item['expl']}")
+            # CLEANING TEXT HERE
+            pdf.multi_cell(0, 5, f"Analysis: {clean_text(item['expl'])}")
             
             # Recommendation
             pdf.set_font("Arial", 'I', 9)
             pdf.set_text_color(80, 80, 80) # Grey
-            pdf.multi_cell(0, 5, f"Recommendation: {item['fix']}")
+            # CLEANING TEXT HERE
+            pdf.multi_cell(0, 5, f"Recommendation: {clean_text(item['fix'])}")
             
             pdf.ln(3) # Space between items
             pdf.set_text_color(0) # Reset
@@ -73,4 +102,5 @@ def create_pdf_report(filename, risks):
     add_section("Safe Clauses", risks['Low'], 0, 180, 100)                      # Green
     
     # --- RETURN BYTES ---
-    return pdf.output(dest='S').encode('latin-1')
+    # Latin-1 encoding will now work because we cleaned the text
+    return pdf.output(dest='S').encode('latin-1', 'replace')
