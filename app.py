@@ -135,6 +135,34 @@ st.markdown("""
 
     #MainMenu {visibility: visible;} footer {visibility: hidden;} header {visibility: visible;} 
     .block-container { padding-bottom: 80px; }
+    
+    /* --- FOOTER --- */
+    .footer { 
+        position: fixed; 
+        left: 0; 
+        bottom: 0; 
+        width: 100%; 
+        background-color: #0E1117; 
+        color: #8B949E; 
+        text-align: center; 
+        padding: 15px; 
+        font-size: 13px; 
+        border-top: 1px solid #30363D; 
+        z-index: 100; 
+    }
+    
+    .footer a { 
+        color: #58A6FF; 
+        text-decoration: none; 
+        font-weight: 600; 
+        transition: 0.3s; 
+    }
+    
+    .footer a:hover { 
+        color: #00C9FF; 
+        text-shadow: 0 0 5px rgba(0, 201, 255, 0.5); 
+    }
+    
     </style>
 """, unsafe_allow_html=True)
 
@@ -342,4 +370,10 @@ elif st.session_state.active_modal == 'email':
     open_email_modal(uploaded_file.name, st.session_state.risks)
 
 # --- FOOTER ---
-st.markdown("""<div class="footer">Designed by <a href="https://github.com/TeraUsername" target="_blank">Siddhant</a> | Powered by Gemini 2.0</div>""", unsafe_allow_html=True)
+st.markdown("""
+    <div class="footer">
+        <span>🛡️ <b>LexiSafe AI</b> &nbsp;•&nbsp; Intelligent Contract Security</span>
+        &nbsp;&nbsp;<span style="color: #30363D;">|</span>&nbsp;&nbsp;
+        <span>Developed by <a href="https://github.com/PathakSiddhant" target="_blank">Siddhant Pathak</a></span>
+    </div>
+""", unsafe_allow_html=True)
